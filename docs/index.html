@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB</title>
+    <script>
+    //   const promisify = (fn) => (...args) => (...opts) =>
+    // new Promise(res => fn(...args, res, ...opts));
+
+    const btnClicked = async () => {
+
+      // const { status, authResponse } = await promisify(window.FB.login)()({
+      //     scope: 'email',
+      //     auth_type: 'reauthenticate',
+      // });
+
+      // return {
+      //   authResponse
+      // }
+
+      FB.login(function(response) {
+        if (response.authResponse) {
+          // Login success, check auth_nonce...
+          return response.authResponse;
+        } else {
+          // User cancelled
+        }
+      }, { auth_type: 'reauthenticate', nonce: new Date().getTime()})
+
+    }
+
+        window.statusChangeCallback = function(data) {
+            console.log("data: ", data);
+        }
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '351626254949311',
+            autoLogAppEvents: true,
+            xfbml: true,
+            version: 'v3.1',
+            cookie     : true,
+            status     : true,
+          });
+            
+          FB.AppEvents.logPageView();   
+            
+        };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+    
+         function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+            }
+        </script>
+    
+</head>
+<body>
+
+
+
+<fb:login-button 
+scope="public_profile,email"
+onlogin="checkLoginState();">
+</fb:login-button>
+
+
+<button onclick="btnClicked()"> Re login </button>
+</body>
+</html>
